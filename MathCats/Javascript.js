@@ -2,20 +2,58 @@ const questionText = document.getElementById( 'question' );
 const answerText = document.getElementById( 'answer' );
 const button = document.getElementById( 'button' );
 const image = document.getElementById( 'image' );
+const type = document.getElementById( 'type' );
 
 answerText.onkeydown = checkAnswerIfEnter;
+type.onchange = setUpQuestion;
 
 setUpQuestion();
 
 function setUpQuestion() {
-  const first = getRandomIntInclusive(0, 9);
-  const second = getRandomIntInclusive(0, 9);
 
-  questionText.expected = first * second;
-  questionText.value = `${first} x ${second}`;
+  const question = getQuestion( type.value );
+
+  questionText.expected = question.answer;
+  questionText.value = question.text;
 
   answerText.value = null;
   answerText.focus();
+}
+
+function getQuestion( questionType ) {
+  const first = getRandomIntInclusive(0, 9);
+  const second = getRandomIntInclusive(0, 9);
+
+  switch( questionType ) {
+
+    case 'add':
+      return {
+        answer: first + second,
+        text: `${first} + ${second}`
+      };
+
+    case 'sub':
+      return {
+        answer: first - second,
+        text: `${first} - ${second}`
+      };
+
+    case 'mul':
+      return {
+        answer: first * second,
+        text: `${first} x ${second}`
+      };
+
+    case 'div':
+      const divisor = second + 1; // Can't divide by zero, so let's do range 1-10 instead of 0-9
+      return {
+        answer: first,
+        text: `${first * divisor} / ${divisor}`
+      };
+
+  }
+
+  throw new "Unexpected type";
 }
 
 function checkAnswer() {
